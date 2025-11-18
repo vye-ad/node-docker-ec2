@@ -7,8 +7,8 @@ on:
 jobs:
   build-push:
     permissions:
-      contents: read      # default, but explicit
-      packages: write     # THIS FIXES THE GHCR ERROR
+      contents: read      # default, explicit is fine
+      packages: write     # fixes GHCR push
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,4 +47,3 @@ jobs:
             docker rm node-app || true
             docker run -d --name node-app -p 3000:3000 \
               ghcr.io/${{ github.repository_owner }}/simple-node-app:latest
- robbins
