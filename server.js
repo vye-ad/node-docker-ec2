@@ -15,9 +15,13 @@ app.get('/', (req, res) => {
     <p>Hostname: <b>${os.hostname()}</b></p>
     <p>Visits: <b>${count}</b></p>
     <p><a href="/health">/health</a></p>
+
+    <p>Deployed by: <strong>Vye-Ad</strong></p>
+    <p>Deployed at: <strong>${new Date().toLocaleString()}</strong></p>
   `);
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
+
