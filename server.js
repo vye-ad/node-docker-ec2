@@ -1,6 +1,5 @@
 const express = require('express');
 const os = require('os');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,17 +10,15 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/', (req, res) => {
   count++;
   res.send(`
-    <h1>Hello from Docker!</h1>
+    <h1>Hello from Docker! Deployed by Vye-Ad</h1>
     <p>Hostname: <b>${os.hostname()}</b></p>
     <p>Visits: <b>${count}</b></p>
-    <p><a href="/health">/health</a></p>
-
-    <p>Deployed by: <strong>Vye-Ad</strong></p>
-    <p>Deployed at: <strong>${new Date().toLocaleString()}</strong></p>
+    <p>Deployed: <b>${new Date().toLocaleString()}</b></p>
+    <hr>
+    <small>CI/CD with GitHub Actions + GHCR + EC2</small>
   `);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
-

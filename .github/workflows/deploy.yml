@@ -1,8 +1,14 @@
+name: Build & Deploy Simple Node App
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
   build-push:
     permissions:
-      contents: read      # already default, but explicit is fine
-      packages: write     # THIS LINE IS REQUIRED (even for public repos)
+      contents: read      # default, but explicit
+      packages: write     # THIS FIXES THE GHCR ERROR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,3 +29,22 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/simple-node-app:latest
+
+  deploy:
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/${{ github.repository_owner }}/simple-node-app:latest
+            docker stop node-app || true
+            docker rm node-app || true
+            docker run -d --name node-app -p 3000:3000 \
+              ghcr.io/${{ github.repository_owner }}/simple-node-app:latest
+ robbins
